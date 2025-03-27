@@ -4,18 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace DummyApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class EmployeeDetailController : ControllerBase
     {
-        private readonly ILogger<EmployeeDetail> _logger;
-        private List<EmployeeDetail> EmployeeDetailsList;
-        public EmployeeDetailController(ILogger<EmployeeDetail> logger)
+       // private readonly ILogger<IEmployeeDetail> _logger;
+        private List<EmployeeDetail> EmployeeDetailsList = new List<EmployeeDetail>();
+        public EmployeeDetailController()
         {
-            _logger = logger;
-            EmployeeDetailsList = new List<EmployeeDetail>();
+            //_logger = logger;
+            
         }
 
         [HttpGet(Name = "GetEmployeeDetail")]
+        //[Route("~/Get")]
         public IEnumerable<EmployeeDetail> Get()
         {
             EmployeeDetailsList.Add( new EmployeeDetail { EmpId = 1, EmpName = "Pragya", EmpEmail = "Pragya@chickooo.com", Salary = 10000000 });
