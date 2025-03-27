@@ -8,26 +8,37 @@ namespace DummyApi.Controllers
     public class EmployeeDetailController : ControllerBase
     {
         private readonly ILogger<EmployeeDetail> _logger;
-        private List<EmployeeDetail> EmployeeDetailsList;
+        private static List<EmployeeDetail>? EmployeeDetailsList;
         public EmployeeDetailController(ILogger<EmployeeDetail> logger)
         {
             _logger = logger;
-            EmployeeDetailsList = new List<EmployeeDetail>();
+            if (EmployeeDetailsList == null) { EmployeeDetailsList = new List<EmployeeDetail>(); }
         }
 
         [HttpGet(Name = "GetEmployeeDetail")]
-        public IEnumerable<EmployeeDetail> Get()
+        public IActionResult Get()
         {
-            EmployeeDetailsList.Add( new EmployeeDetail { EmpId = 1, EmpName = "Pragya", EmpEmail = "Pragya@chickooo.com", Salary = 10000000 });
-            return EmployeeDetailsList;
+            if (EmployeeDetailsList?.Count == 0)
+            {
+                return NotFound("No data found.");
+            }
+
+            // Return all data in the collection
+            return Ok(EmployeeDetailsList);
         }
 
         [HttpPost(Name = "SetEmployeeDetail")]
         public IActionResult SetEmployeeDetail([FromBody] EmployeeDetail empDtl)
         {
-            EmployeeDetailsList.Add(empDtl);
-            return new OkObjectResult(true);
-           // return EmployeeDetailsList;
+
+            if (empDtl==null)
+            {
+                return BadRequest("Data cannot be empty.");
+            }
+
+            // Add new data to the collection
+            EmployeeDetailsList?.Add(empDtl);
+            return Ok(EmployeeDetailsList);
         }
     }
 }
