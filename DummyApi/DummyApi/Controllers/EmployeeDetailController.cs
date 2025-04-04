@@ -7,28 +7,42 @@ namespace DummyApi.Controllers
     [Route("[controller]/[action]")]
     public class EmployeeDetailController : ControllerBase
     {
-       // private readonly ILogger<IEmployeeDetail> _logger;
-        private List<EmployeeDetail> EmployeeDetailsList = new List<EmployeeDetail>();
-        public EmployeeDetailController()
+        private readonly ILogger<EmployeeDetail> _logger;
+        private static List<EmployeeDetail>? EmployeeDetailsList;
+        public EmployeeDetailController(ILogger<EmployeeDetail> logger)
         {
-            //_logger = logger;
-            
+            _logger = logger;
+            if (EmployeeDetailsList == null)
+            {
+                EmployeeDetailsList = new List<EmployeeDetail> { new EmployeeDetail { EmpId = 1, EmpName = "Pragya rathi", EmpEmail = "Pragya.com", Salary = 10000000 }
+                };
+            }
         }
 
-        [HttpGet(Name = "GetEmployeeDetail")]
-        //[Route("~/Get")]
-        public IEnumerable<EmployeeDetail> Get()
-        {
-            EmployeeDetailsList.Add( new EmployeeDetail { EmpId = 1, EmpName = "Pragya", EmpEmail = "Pragya@chickooo.com", Salary = 10000000 });
-            return EmployeeDetailsList;
-        }
+            [HttpGet(Name = "GetEmployeeDetail")]
+            public IActionResult Get()
+            {
+                if (EmployeeDetailsList?.Count == 0)
+                {
+                    return NotFound("No data found.");
+                }
 
-        [HttpPost(Name = "SetEmployeeDetail")]
-        public IActionResult SetEmployeeDetail([FromBody] EmployeeDetail empDtl)
-        {
-            EmployeeDetailsList.Add(empDtl);
-            return new OkObjectResult(true);
-           // return EmployeeDetailsList;
+                // Return all data in the collection
+                return Ok(EmployeeDetailsList);
+            }
+
+            [HttpPost(Name = "SetEmployeeDetail")]
+            public IActionResult SetEmployeeDetail([FromBody] EmployeeDetail empDtl)
+            {
+
+                if (empDtl == null)
+                {
+                    return BadRequest("Data cannot be empty.");
+                }
+
+                // Add new data to the collection
+                EmployeeDetailsList?.Add(empDtl);
+                return Ok(EmployeeDetailsList);
+            }
         }
     }
-}
